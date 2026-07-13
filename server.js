@@ -40,7 +40,11 @@ app.use(
 // 2. Configure CORS with strict allowed origins list
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+  : [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'https://placar-frontend.vercel.app'
+    ];
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -55,10 +59,7 @@ const corsOptions = {
   credentials: true
 };
 
-app.use(cors({
-  origin: 'https://placar-frontend.vercel.app' || 'http://localhost:5173'
-}));
-
+app.use(cors(corsOptions));
 
 // 3. Limit JSON payload size to prevent Server Crash/DDoS (Memory Exhaustion)
 app.use(express.json({ limit: '50kb' }));
@@ -88,6 +89,15 @@ const io = new Server(httpServer, {
 
 // Attach the socket instance to the Express app context for routing access
 app.set('io', io);
+
+// Root endpoint for a friendly landing page confirmation
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Racing Telemetry API Server is running.',
+    health: '/health',
+    telemetry: '/api/telemetria'
+  });
+});
 
 // Mount API routes
 app.use('/api', telemetryRouter);
