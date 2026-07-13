@@ -114,6 +114,12 @@ app.get('/health', (req, res) => {
 io.on('connection', (socket) => {
   console.log(`[WebSocket Connected]: ID = ${socket.id}`);
 
+  // Fetch and send the latest telemetry data immediately to the newly connected device
+  const latestTelemetry = app.get('latestTelemetry');
+  if (latestTelemetry) {
+    socket.emit('atualizacao_telemetria', latestTelemetry);
+  }
+
   socket.on('disconnect', (reason) => {
     console.log(`[WebSocket Disconnected]: ID = ${socket.id}, Reason = ${reason}`);
   });

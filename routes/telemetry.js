@@ -40,6 +40,9 @@ router.post('/telemetria', validateApiKey, (req, res) => {
     });
   }
 
+  // Save the latest telemetry data in the Express app context for sync on connection
+  req.app.set('latestTelemetry', result.data);
+
   // Stateless real-time broadcast of safely parsed and sanitized telemetry data
   io.emit('atualizacao_telemetria', result.data);
 
