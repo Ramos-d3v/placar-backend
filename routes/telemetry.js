@@ -7,12 +7,12 @@ const router = express.Router();
 // Define strict schema for individual driver telemetry
 const driverTelemetrySchema = z.object({
   colocacao: z.number().int().min(1),
-  numero: z.string().min(1).max(10).regex(/^[a-zA-Z0-9#\s-]+$/), // Prevent HTML injection and command special characters
+  numero: z.coerce.string().min(1).max(10).regex(/^[a-zA-Z0-9#\s-]+$/), // Prevent HTML injection and command special characters. Coerces numbers to strings automatically.
   nome: z.string().min(1).max(50).trim(),
   voltas: z.number().int().nonnegative(),
   tempo: z.string().regex(/^([0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}|-)$/), // Strict format verification (HH:MM:SS.mmm or "-")
   categoria: z.string().min(1).max(30).trim()
-});
+}).passthrough();
 
 // Define strict schema for the telemetry array payload, setting limit to max 100 drivers per batch
 const telemetryPayloadSchema = z.array(driverTelemetrySchema).max(100);
