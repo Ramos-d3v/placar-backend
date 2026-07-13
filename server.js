@@ -14,7 +14,17 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // 1. Configure Helmet for secure HTTP headers and Content Security Policy (CSP)
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      },
+    },
+  })
+);
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
